@@ -9,28 +9,57 @@ st.title("📋 Formulario de Registro")
 def validar_correo(correo):
     return re.match(r"[^@]+@[^@]+\.[^@]+", correo)
 
-# Inicializar valores en session_state si no existen
-if "nombre" not in st.session_state:
-    st.session_state.nombre = ""
-if "edad" not in st.session_state:
-    st.session_state.edad = 0
-if "correo" not in st.session_state:
-    st.session_state.correo = ""
-if "comentario" not in st.session_state:
-    st.session_state.comentario = ""
+# Cargar archivo con provincias, cantones y distritos
+archivo_ubicaciones = "división_territorial_CR.xlsx"
 
-# Función para limpiar formulario
+if not os.path.exists(archivo_ubicaciones):
+    st.error("Archivo de ubicaciones no encontrado. Por favor, sube el archivo 'ubicaciones.xlsx' con las columnas Provincia, Cantón y Distrito.")
+    st.stop()
+
+df_ubicaciones = pd.read_excel(archivo_ubicaciones)
+
+
+# Limpieza rápida para evitar espacios extras
+df_ubicaciones['Provincia'] = df_ubicaciones['Provincia'].str.strip()
+df_ubicaciones['Cantón'] = df_ubicaciones['Cantón'].str.strip()
+df_ubicaciones['Distrito'] = df_ubicaciones['Distrito'].str.strip()
+
+# Inicializar session_state para inputs si no existen
+for key, default in [("nombre", ""), ("edad", 0), ("correo", ""), ("comentario", ""),
+                     ("provincia", ""), ("canton", ""), ("distrito", "")]:
+    if key not in st.session_state:
+        st.session_state[key] = default
+
 def limpiar_formulario():
-    st.session_state.nombre = ""
-    st.session_state.edad = 0
-    st.session_state.correo = ""
-    st.session_state.comentario = ""
+    for key in ["nombre", "edad", "correo", "comentario", "provincia", "canton", "distrito"]:
+        if isinstance(st.session_state[key], int):
+            st.session_state[key] = 0
+        else:
+            st.session_state[key] = ""
 
-# Campos del formulario vinculados a session_state
+# Campos del formulario
 nombre = st.text_input("Nombre completo", key="nombre")
 edad = st.number_input("Edad", 0, 120, key="edad")
 correo = st.text_input("Correo electrónico", key="correo")
 comentario = st.text_area("Comentario", key="comentario")
+
+# Select provincia
+provincias = df_ubicaciones['Provincia'].unique()
+provincia = st.selectbox("Provincia", options=[""] + list(provincias), key="provincia")
+
+# Select cantón según provincia
+if provincia:
+    cantones = df_ubicaciones[df_ubicaciones['Provincia'] == provincia]['Cantón'].unique()
+else:
+    cantones = []
+canton = st.selectbox("Cantón", options=[""] + list(cantones), key="canton")
+
+# Select distrito según cantón
+if canton:
+    distritos = df_ubicaciones[(df_ubicaciones['Provincia'] == provincia) & (df_ubicaciones['Cantón'] == canton)]['Distrito'].unique()
+else:
+    distritos = []
+distrito = st.selectbox("Distrito", options=[""] + list(distritos), key="distrito")
 
 archivo = "respuestas.csv"
 
@@ -42,12 +71,17 @@ with col1:
             st.error("Por favor ingresa tu nombre completo.")
         elif not validar_correo(correo):
             st.error("Por favor ingresa un correo válido.")
+        elif not provincia or not canton or not distrito:
+            st.error("Por favor selecciona provincia, cantón y distrito.")
         else:
             nueva_respuesta = pd.DataFrame({
                 'Nombre': [nombre],
                 'Edad': [edad],
                 'Correo': [correo],
                 'Comentario': [comentario],
+                'Provincia': [provincia],
+                'Cantón': [canton],
+                'Distrito': [distrito],
                 'Fecha': [datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
             })
             
