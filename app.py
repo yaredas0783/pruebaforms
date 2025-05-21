@@ -37,7 +37,8 @@ for key, default in campos.items():
 
 def limpiar_formulario():
     for key, default in campos.items():
-        st.session_state[key] = default
+        if key in st.session_state:
+            st.session_state[key] = default
 
 # Campos del formulario (igual)
 nombre = st.text_input("Nombre completo", key="nombre")
