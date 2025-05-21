@@ -37,8 +37,17 @@ for key, default in campos.items():
 
 def limpiar_formulario():
     for key, default in campos.items():
+        # Solo asignar si la key ya existe en session_state
         if key in st.session_state:
-            st.session_state[key] = default
+            # Para 'grupo', que es un selectbox, asegúrate que el valor predeterminado sea válido
+            if key == "grupo" and default == "":
+                st.session_state[key] = ""
+            # Para 'asististe', que es un radio con opción "Seleccione...", asignar ese valor
+            elif key == "asististe":
+                st.session_state[key] = "Seleccione..."
+            else:
+                st.session_state[key] = default
+
 
 # Campos del formulario (igual)
 nombre = st.text_input("Nombre completo", key="nombre")
