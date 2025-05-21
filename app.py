@@ -25,7 +25,7 @@ df_ubicaciones['Distrito'] = df_ubicaciones['Distrito'].str.strip()
 
 # Inicializar session_state para inputs si no existen
 for key, default in [("nombre", ""), ("edad", 0), ("correo", ""), ("comentario", ""),
-                     ("provincia", ""), ("canton", ""), ("distrito", ""), ("grupo", ""), ("asististe", ""), ("motivo_ausencia", ""),
+                     ("provincia", ""), ("canton", ""), ("distrito", ""), ("grupo", ""), ("asististe", "Seleccione..."), ("motivo_ausencia", ""),
                      ("clase_favorita", ""), ("clase_menos_gusto", ""), ("recomendaciones", ""), ("experiencia", ""),
                      ("calificacion", 5), ("interes_cursos", []), ("otro_curso", "")]:
     if key not in st.session_state:
