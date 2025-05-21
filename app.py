@@ -41,7 +41,6 @@ def limpiar_formulario():
 nombre = st.text_input("Nombre completo", key="nombre")
 edad = st.number_input("Edad", 0, 120, key="edad")
 correo = st.text_input("Correo electrónico", key="correo")
-comentario = st.text_area("Comentario", key="comentario")
 grupo = st.selectbox(
     "¿Cuál es el número de grupo donde te inscribiste? *",
     options=["", "Grupo 1", "Grupo 2", "Grupo 3", "Grupo 4", "Grupo 5", "Grupo 6", "Grupo 7", "Grupo 8", "Grupo 9", "Grupo 10"],
