@@ -71,7 +71,13 @@ clase_favorita = st.text_area("¿Cuál de las clases te gustó más? Porfa conta
 clase_menos_gusto = st.text_area("¿Cuál de las clases te gustó menos? Porfa contanos por qué *", key="clase_menos_gusto")
 recomendaciones = st.text_area("¿Qué recomendaciones nos harías para el futuro? *", key="recomendaciones")
 experiencia = st.text_area("¿Podrías escribir unas pocas líneas comentándonos tu experiencia y resumiéndonos cuál ha sido tu apreciación general del curso? *", key="experiencia")
-calificacion = st.slider("En general, ¿qué calificación le das al curso? *", 1, 10, value=st.session_state["calificacion"], step=1, format="%d", key="calificacion")
+calificacion = st.slider(
+    "En general, ¿qué calificación le das al curso? *",
+    1, 10,
+    step=1,
+    format="%d",
+    key="calificacion"
+)
 interes_cursos = st.multiselect(
     "Interés por otros cursos que impartimos y que no hayas llevado *",
     options=[
