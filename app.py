@@ -57,7 +57,7 @@ asististe = st.radio(
     key="asististe"
 )
 
-motivo_ausencia = st.selectbox(
+motivo_ausencia = st.multiselect(
     "Si faltaste a algunas de las clases, ¿por qué fue? *",
     options=[
         "",
