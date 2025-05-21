@@ -53,9 +53,10 @@ grupo = st.selectbox(
 )
 asististe = st.radio(
     "¿Asististe a las cuatro clases? *",
-    options=["Si", "No"],
+    options=["Seleccione...", "Si", "No"],
     key="asististe"
 )
+
 motivo_ausencia = st.selectbox(
     "Si faltaste a algunas de las clases, ¿por qué fue? *",
     options=[
