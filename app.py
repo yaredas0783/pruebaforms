@@ -18,7 +18,6 @@ if not os.path.exists(archivo_ubicaciones):
 
 df_ubicaciones = pd.read_excel(archivo_ubicaciones)
 
-
 # Limpieza rápida para evitar espacios extras
 df_ubicaciones['Provincia'] = df_ubicaciones['Provincia'].str.strip()
 df_ubicaciones['Cantón'] = df_ubicaciones['Cantón'].str.strip()
@@ -26,14 +25,20 @@ df_ubicaciones['Distrito'] = df_ubicaciones['Distrito'].str.strip()
 
 # Inicializar session_state para inputs si no existen
 for key, default in [("nombre", ""), ("edad", 0), ("correo", ""), ("comentario", ""),
-                     ("provincia", ""), ("canton", ""), ("distrito", "")]:
+                     ("provincia", ""), ("canton", ""), ("distrito", ""), ("grupo", ""), ("asististe", ""), ("motivo_ausencia", ""),
+                     ("clase_favorita", ""), ("clase_menos_gusto", ""), ("recomendaciones", ""), ("experiencia", ""),
+                     ("calificacion", 5), ("interes_cursos", []), ("otro_curso", "")]:
     if key not in st.session_state:
         st.session_state[key] = default
 
 def limpiar_formulario():
-    for key in ["nombre", "edad", "correo", "comentario", "provincia", "canton", "distrito"]:
+    for key in ["nombre", "edad", "correo", "comentario", "provincia", "canton", "distrito", "grupo",
+                "asististe", "motivo_ausencia", "clase_favorita", "clase_menos_gusto", "recomendaciones",
+                "experiencia", "calificacion", "interes_cursos", "otro_curso"]:
         if isinstance(st.session_state[key], int):
             st.session_state[key] = 0
+        elif isinstance(st.session_state[key], list):
+            st.session_state[key] = []
         else:
             st.session_state[key] = ""
 
@@ -78,15 +83,13 @@ recomendaciones = st.text_area(
     "¿Qué recomendaciones nos harías para el futuro? *",
     key="recomendaciones"
 )
-
 experiencia = st.text_area(
     "¿Podrías escribir unas pocas líneas comentándonos tu experiencia y resumiéndonos cuál ha sido tu apreciación general del curso? (Por ejemplo, podrías responder a alguna o algunas de estas preguntas: ¿cómo ha sido el contacto con tus tutores? ¿te has sentido acompañado(a) y apoyado(a)? ¿El curso ha cumplido tus expectativas? ¿qué fue lo que más te gustó? ¿qué fue lo que menos te gustó? ¿recomendarías el curso a otras personas? ¿te sentís contento(a) de haber llevado el curso?, o simplemente contarnos qué te ha parecido todo…)*",
     key="experiencia"
 )
-
 calificacion = st.slider(
     "En general, ¿qué calificación le das al curso? *",
-    min_value=1, max_value=10, value=5, step=1,
+    min_value=1, max_value=10, value=st.session_state["calificacion"], step=1,
     format="%d",
     key="calificacion"
 )
@@ -102,7 +105,6 @@ interes_cursos = st.multiselect(
     ],
     key="interes_cursos"
 )
-
 otro_curso = st.text_input(
     "¿Qué otro curso te gustaría recibir de manera virtual?",
     key="otro_curso"
@@ -138,18 +140,41 @@ with col1:
             st.error("Por favor ingresa un correo válido.")
         elif not provincia or not canton or not distrito:
             st.error("Por favor selecciona provincia, cantón y distrito.")
+        elif not grupo:
+            st.error("Por favor selecciona el grupo.")
+        elif not asististe:
+            st.error("Por favor indica si asististe a las cuatro clases.")
+        elif not motivo_ausencia:
+            st.error("Por favor selecciona el motivo de ausencia.")
+        elif not clase_favorita.strip():
+            st.error("Por favor escribe cuál fue tu clase favorita.")
+        elif not clase_menos_gusto.strip():
+            st.error("Por favor escribe cuál fue la clase que menos te gustó.")
+        elif not recomendaciones.strip():
+            st.error("Por favor escribe tus recomendaciones.")
+        elif not experiencia.strip():
+            st.error("Por favor escribe tu experiencia general del curso.")
         else:
             nueva_respuesta = pd.DataFrame({
                 'Nombre': [nombre],
                 'Edad': [edad],
                 'Correo': [correo],
-                'Comentario': [comentario],
+                'Grupo': [grupo],
+                'Asistió a todas las clases': [asististe],
+                'Motivo de ausencia': [motivo_ausencia],
+                'Clase favorita': [clase_favorita],
+                'Clase que menos gustó': [clase_menos_gusto],
+                'Recomendaciones': [recomendaciones],
+                'Experiencia general': [experiencia],
+                'Calificación curso': [calificacion],
+                'Interés en otros cursos': [", ".join(interes_cursos) if interes_cursos else ""],
+                'Otro curso deseado': [otro_curso],
                 'Provincia': [provincia],
                 'Cantón': [canton],
                 'Distrito': [distrito],
                 'Fecha': [datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
             })
-            
+
             if os.path.exists(archivo):
                 df_existente = pd.read_csv(archivo)
                 df_actualizado = pd.concat([df_existente, nueva_respuesta], ignore_index=True)
