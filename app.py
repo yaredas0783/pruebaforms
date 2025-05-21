@@ -42,6 +42,72 @@ nombre = st.text_input("Nombre completo", key="nombre")
 edad = st.number_input("Edad", 0, 120, key="edad")
 correo = st.text_input("Correo electrónico", key="correo")
 comentario = st.text_area("Comentario", key="comentario")
+grupo = st.selectbox(
+    "¿Cuál es el número de grupo donde te inscribiste? *",
+    options=["", "Grupo 1", "Grupo 2", "Grupo 3", "Grupo 4", "Grupo 5", "Grupo 6", "Grupo 7", "Grupo 8", "Grupo 9", "Grupo 10"],
+    key="grupo"
+)
+asististe = st.radio(
+    "¿Asististe a las cuatro clases? *",
+    options=["Si", "No"],
+    key="asististe"
+)
+motivo_ausencia = st.selectbox(
+    "Si faltaste a algunas de las clases, ¿por qué fue? *",
+    options=[
+        "",
+        "Tuve problemas de internet",
+        "Tuve que atender otras situaciones",
+        "Sentía que las clases no me eran útiles",
+        "No entendía la materia",
+        "No me gustaban las clases",
+        "El horario me resultaba muy incómodo",
+        "No falté a ninguna clase",
+        "Otros"
+    ],
+    key="motivo_ausencia"
+)
+clase_favorita = st.text_area(
+    "¿Cuál de las clases te gustó más? Porfa contanos por qué *",
+    key="clase_favorita"
+)
+clase_menos_gusto = st.text_area(
+    "¿Cuál de las clases te gustó menos? Porfa contanos por qué *",
+    key="clase_menos_gusto"
+)
+recomendaciones = st.text_area(
+    "¿Qué recomendaciones nos harías para el futuro? *",
+    key="recomendaciones"
+)
+
+experiencia = st.text_area(
+    "¿Podrías escribir unas pocas líneas comentándonos tu experiencia y resumiéndonos cuál ha sido tu apreciación general del curso? (Por ejemplo, podrías responder a alguna o algunas de estas preguntas: ¿cómo ha sido el contacto con tus tutores? ¿te has sentido acompañado(a) y apoyado(a)? ¿El curso ha cumplido tus expectativas? ¿qué fue lo que más te gustó? ¿qué fue lo que menos te gustó? ¿recomendarías el curso a otras personas? ¿te sentís contento(a) de haber llevado el curso?, o simplemente contarnos qué te ha parecido todo…)*",
+    key="experiencia"
+)
+
+calificacion = st.slider(
+    "En general, ¿qué calificación le das al curso? *",
+    min_value=1, max_value=10, value=5, step=1,
+    format="%d",
+    key="calificacion"
+)
+interes_cursos = st.multiselect(
+    "Interés por otros cursos que impartimos y que no hayas llevado *",
+    options=[
+        "Economía para la Vida",
+        "Redacción Consciente",
+        "Excel Intermedio",
+        "Economía para entender el Mercado y la Sociedad",
+        "Indicadores Macroeconómicos",
+        "Ninguno"
+    ],
+    key="interes_cursos"
+)
+
+otro_curso = st.text_input(
+    "¿Qué otro curso te gustaría recibir de manera virtual?",
+    key="otro_curso"
+)
 
 # Select provincia
 provincias = df_ubicaciones['Provincia'].unique()
