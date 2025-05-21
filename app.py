@@ -177,7 +177,7 @@ if st.checkbox("Mostrar respuestas"):
     password = st.text_input("Contraseña", type="password")
 
     usuario_correcto = "admin"
-    contraseña_correcta = "1234"
+    contraseña_correcta = st.secrets["CONTRASENA_ADMIN"]
 
     if user == usuario_correcto and password == contraseña_correcta:
         if os.path.exists(archivo):
